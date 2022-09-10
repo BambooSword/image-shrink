@@ -10,10 +10,6 @@ const path = require('path')
 const os = require('os')
 const slash = import('slash')
 
-const imagemin = import('imagemin').then(C => C)
-const imageminMozjpeg = import('imagemin-mozjpeg').then(C => C)
-const imageminPngquant = import('imagemin-pngquant').then(C => C)
-
 // set env
 process.env.NODE_ENV = 'development'
 
@@ -140,6 +136,9 @@ import('./createWindow.mjs').then(({ createMainWindow }) => {
         })
         console.log(files, dest, '<===== files, dest')
         shell.openPath(dest)
+
+        // ipc: main -> render
+        mainWindow.webContents.send('image:done')
       })
     } catch (error) {
       console.log(error, '<===error')
