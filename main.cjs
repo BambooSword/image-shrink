@@ -8,14 +8,15 @@ const {
 } = require('electron')
 const path = require('path')
 const os = require('os')
-const slash = import('slash')
+
+const log = require('electron-log')
 
 // set env
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'production'
 
 const isDev = process.env.NODE_ENV !== 'production' ? true : false
 const isMac = process.platform === 'darwin' ? true : false
-console.log(process.platform)
+log.info(process.platform)
 
 let mainWindow
 let aboutWindow
@@ -27,11 +28,9 @@ import('./createWindow.mjs').then(({ createMainWindow }) => {
     Menu.setApplicationMenu(mainMenu)
 
     globalShortcut.register('CommandOrControl+R', () => {
-      console.log('reload')
       mainWindow.reload()
     })
     globalShortcut.register(isMac ? 'Command+Alt+I' : 'Ctrl+Shift+I', () => {
-      console.log('toggleDevTools')
       mainWindow.toggleDevTools()
     })
 
@@ -110,7 +109,7 @@ import('./createWindow.mjs').then(({ createMainWindow }) => {
 
   ipcMain.on('image:minimize', (e, options) => {
     options.dest = path.join(os.homedir(), 'imageshrink')
-    console.log(options.dest, '<====dest')
+    log.info(options.dest, '<====dest')
     shrinkImage(options)
   })
 
@@ -122,8 +121,6 @@ import('./createWindow.mjs').then(({ createMainWindow }) => {
         import('imagemin-mozjpeg'),
         import('imagemin-pngquant'),
       ]).then(async ([slash, imagemin, imageminMozjpeg, imageminPngquant]) => {
-        console.log('slash', slash.default('a\\b'))
-        console.log(slash, imagemin, imageminMozjpeg)
         const pngQuality = quality / 100
         const files = await imagemin.default([slash.default(imgPath)], {
           destination: dest,
@@ -134,14 +131,14 @@ import('./createWindow.mjs').then(({ createMainWindow }) => {
             }),
           ],
         })
-        console.log(files, dest, '<===== files, dest')
+        log.warn(files, dest, '<===== files, dest')
         shell.openPath(dest)
 
         // ipc: main -> render
         mainWindow.webContents.send('image:done')
       })
     } catch (error) {
-      console.log(error, '<===error')
+      log.error(error, '<===error')
     }
   }
 })
