@@ -1,4 +1,7 @@
 .yarn
+
+# release-builds
+release-builds/
 # Logs
 logs
 *.log

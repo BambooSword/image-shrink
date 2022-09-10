@@ -17,8 +17,8 @@ function createMainWindow(BrowserWindow, isDev) {
   mainWindow.loadFile(`./app/index.html`)
   return mainWindow
 }
-function createAboutWindow() {
-  aboutWindow = new BrowserWindow({
+function createAboutWindow(BrowserWindow, isDev) {
+  const aboutWindow = new BrowserWindow({
     title: 'ImageShrink',
     width: 300,
     height: 300,

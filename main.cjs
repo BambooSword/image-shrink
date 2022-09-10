@@ -12,7 +12,7 @@ const os = require('os')
 const log = require('electron-log')
 
 // set env
-process.env.NODE_ENV = 'production'
+process.env.NODE_ENV = 'development'
 
 const isDev = process.env.NODE_ENV !== 'production' ? true : false
 const isMac = process.platform === 'darwin' ? true : false
@@ -54,7 +54,8 @@ import('./createWindow.mjs').then(({ createMainWindow }) => {
               {
                 label: 'About',
                 click: import('./createWindow.mjs').then(
-                  ({ createAboutWindow: C }) => C
+                  ({ createAboutWindow }) =>
+                    createAboutWindow(BrowserWindow, isDev)
                 ),
               },
             ],
